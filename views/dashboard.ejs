@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <title>Email Automation</title>
+</head>
+
+<body>
+    <%- include('../public/html/header.html') %>
+        <style>
+            p {
+                font-size: 150px;
+                font-weight: 700;
+                text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+                text-align: center;
+            }
+
+            .card_1 {
+                color: #FF204E;
+            }
+
+            .card_2 {
+                color: #0043a0;
+            }
+
+            .card_3 {
+                color: #fda000;
+            }
+
+            h1 {
+                text-align: center;
+            }
+
+            .d-grid button {
+                font-size: 25px;
+            }
+
+            .buttons {
+                margin: 30px 0px;
+            }
+
+            .dash_link {
+                border-radius: 25px;
+            }
+        </style>
+        <div class="d-flex justify-content-evenly align-items-center mt-4 mb-5">
+            <div>
+                <p class="m-0 card_1">
+                    <%= email %>
+                </p>
+                <h1>Emails Sent</h1>
+            </div>
+            <div>
+                <p class="m-0 card_2">
+                    <%= leads %>
+                </p>
+                <h1>Registered Leads</h1>
+            </div>
+            <div>
+                <p class="m-0 card_3">
+                    <%= sched %>
+                </p>
+                <h1>Schedules Set</h1>
+            </div>
+        </div>
+        <div class="row justify-content-around buttons align-items-center mt-5 pt-5 mx-0">
+            <div class="d-grid gap-2 col px-5">
+                <button class="btn btn-success dash_link" id="add_mail" type="button"><i
+                        class="fa-solid fa-arrow-right"></i> Add Email Address <i
+                        class="fa-regular fa-envelope"></i></button>
+                <br>
+                <button class="btn btn-secondary dash_link" id="show_lead" type="button"> <i
+                        class="fa-solid fa-arrow-right"></i> View Leads <i class="fa-solid fa-users"></i></button>
+            </div>
+            <div class="d-grid gap-2 col px-5">
+                <button class="btn btn-info dash_link" id="show_sched" type="button"><i
+                        class="fa-solid fa-arrow-right"></i> View Schedules <i
+                        class="fa-regular fa-calendar-days"></i></button>
+                <br>
+                <button class="btn btn-danger dash_link" id="show_cat" type="button"><i
+                        class="fa-solid fa-arrow-right"></i> View Categories <i
+                        class="fa-solid fa-layer-group"></i></button>
+            </div>
+        </div>
+        <!-- <div>
+            <form action="/" method="post">
+                <div class="mb-3">
+                    <label for="exampleInputEmail1" class="form-label">Subject</label>
+                    <input type="text" name="subject" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+                </div>
+                <div class="mb-3">
+                    <label for="exampleInputPassword1" class="form-label">Body</label>
+                    <input type="text" name="text" class="form-control" id="exampleInputPassword1">
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </form>
+        </div> -->
+
+        <script>
+            document.getElementById('nav_dash').classList.add('active')
+
+            document.getElementById('show_lead').onclick = () => {
+                window.location.href = `/leads`;
+            };
+
+            document.getElementById('show_sched').onclick = () => {
+                window.location.href = `/schedules`;
+            };
+
+            document.getElementById('show_cat').onclick = () => {
+                window.location.href = `/categories`;
+            };
+            
+            document.addEventListener('DOMContentLoaded', function() {
+                function sendAjaxRequest() {
+                    $.ajax({
+                        url: '/send',
+                        method: 'GET',
+                        // contentType: 'application/json',
+                        data: { text: 'Testing Nodemailer', subject: 'Email Automation', recipent: 'akshatjain2678@gmail.com' },
+                        success: function (data) {
+                            // console.log(data);
+                            console.log("Sent to akshatjainmail");
+                        },
+                        error: function (error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                }
+                $.ajax({
+                    url: '/test',
+                    method: 'POST',
+                    // contentType: 'application/json',
+                    data: {text: "Hello Akshat"},
+                    success: function(data){
+                        console.log(data);
+                    },
+                    error: function (err){
+                        console.log('Error: ', err)
+                    }
+                });
+            // Function to repeatedly send the AJAX request every 1 minute
+                sendAjaxRequest(); // Initial request
+                setInterval(sendAjaxRequest, 60000); // Repeat every 60000 milliseconds (1 minute)
+                
+        });
+        </script>
+</body>
+
+</html>

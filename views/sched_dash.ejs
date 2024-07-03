@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <title>Email Automation</title>
+</head>
+
+<body>
+    <%- include('../public/html/header.html') %>
+        <style>
+            p {
+                font-size: 150px;
+                font-weight: 700;
+                text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+                text-align: center;
+            }
+
+            .card_1 {
+                color: #FF204E;
+            }
+
+            .card_2 {
+                color: #0043a0;
+            }
+
+            .card_3 {
+                color: #fda000;
+            }
+
+            h1 {
+                text-align: center;
+            }
+
+            .d-grid button {
+                font-size: 25px;
+            }
+
+            .buttons {
+                margin: 30px 0px;
+            }
+
+            .dash_link {
+                border-radius: 25px;
+            }
+        </style>
+        <div class="d-flex justify-content-evenly align-items-center mt-4 mb-5">
+            <div>
+                <p class="m-0 card_1">
+                    <%= sched %>
+                </p>
+                <h1>Total Schedules</h1>
+            </div>
+            <div>
+                <p class="m-0 card_2">
+                    <%= active %>
+                </p>
+                <h1>Active Schedules</h1>
+            </div>
+            <div>
+                <p class="m-0 card_3">
+                    <%= inactive %>
+                </p>
+                <h1>Inactive Schedules</h1>
+            </div>
+        </div>
+        <!-- Modal Start -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">Add Schedule Info</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <form method="post" action="/schedules">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="sched_name" class="my-1">Schedule Name</label>
+                                <input class="form-control col-md-12" name="sched_name" id="sched_name" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="catselect" class="my-1">Category</label>
+                                <select id="catselect" class="form-control" name="cat_id" required>
+                                    <option value="" selected disabled hidden>Choose</option>
+                                    <!-- Options will be dynamically populated via AJAX -->
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="message" class="my-1">Message to be Sent</label>
+                                <input class="form-control col-md-12" name="message" id="message" required />
+                            </div>
+                            <div class="col-sm-12 d-flex justify-content-between">
+                                <div class="col-sm-5 form-group">
+                                    <label class="form-label my-1" for="interval">Days Interval</label>
+                                    <input class="form-control col-md-12" name="interval" id="interval" required/>
+                                </div>
+                                <div class="col-sm-6 form-group">
+                                    <label class="form-label my-1" for="remain_time">Time(24-hour format)</label>
+                                    <input class="form-control col-md-12" name="time" id="remain_time" required/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Modal End -->
+        <div class="row justify-content-around buttons align-items-center mt-5 pt-5 mx-0">
+            <div class="d-grid gap-2 col px-5 mt-3">
+                <button class="btn btn-success dash_link" type="button"  data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop"><i class="fa-solid fa-arrow-right" ></i> Add
+                    Schedule
+                    <i class="fa-solid fa-stopwatch"></i></button>
+                <br>
+                <!-- <button class="btn btn-secondary dash_link" type="button"> <i class="fa-solid fa-arrow-right"></i> View All Leads <i class="fa-solid fa-users"></i></button> -->
+            </div>
+            <div class="d-grid gap-2 col px-5 mt-3">
+                <button class="btn btn-info dash_link" id="show" type="button"><i class="fa-solid fa-arrow-right"></i>
+                    View Schedules <i class="fa-regular fa-calendar-days"></i></button>
+                <br>
+                <!-- <button class="btn btn-danger dash_link" type="button"><i class="fa-solid fa-arrow-right"></i> View Categories <i class="fa-solid fa-layer-group"></i></button> -->
+            </div>
+        </div>
+        <script>
+            document.getElementById('nav_sched').classList.add('active')
+            document.getElementById('show').onclick = () => {
+                window.location.href = `/schedules/show`;
+            };
+
+            $(document).ready(function () {
+                $.ajax({
+                    url: '/leads/get_cat',
+                    method: 'GET',
+                    success: function (data) {
+                        data.forEach(element => {
+                            $('#catselect').append(`<option value='${element.cat_id}'>${element.cat_name}</option>`);
+                        });
+                    },
+                    error: function (err) {
+                        console.error("Error Fetching Categories");
+                    }
+                });
+            });
+        </script>
+</body>
+
+</html>
